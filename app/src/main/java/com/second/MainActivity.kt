@@ -1,8 +1,10 @@
 package com.second
 
 import android.app.NotificationManager
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -83,6 +85,10 @@ class MainActivity : AppCompatActivity(), DisplayUnitListener {
         })
 
         recyclerview.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
+
+        app_inbox.setOnClickListener(View.OnClickListener {
+            launchAppInbox();
+        })
     }
 
 
@@ -114,5 +120,14 @@ class MainActivity : AppCompatActivity(), DisplayUnitListener {
         Logger.v("Added to display adapter")
         Logger.v((contentList.size).toString())
         Logger.v((contentList.size).toString())
+    }
+
+    /** Called when the user taps the Send button */
+    fun launchAppInbox() {
+        val message = "personal Message";
+        val intent = Intent(this, AppInboxActivity::class.java).apply {
+            putExtra(EXTRA_MESSAGE, message)
+        }
+        startActivity(intent)
     }
 }
