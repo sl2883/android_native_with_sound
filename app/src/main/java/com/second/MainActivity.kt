@@ -10,18 +10,22 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.clevertap.android.sdk.CTInboxListener
 import com.clevertap.android.sdk.CleverTapAPI
 import com.clevertap.android.sdk.Logger
 import com.clevertap.android.sdk.displayunits.DisplayUnitListener
 import com.clevertap.android.sdk.displayunits.model.CleverTapDisplayUnit
 import com.clevertap.android.sdk.displayunits.model.CleverTapDisplayUnitContent
 import com.clevertap.android.sdk.product_config.CTProductConfigListener
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class MainActivity : AppCompatActivity(), DisplayUnitListener {
+class MainActivity : AppCompatActivity(), DisplayUnitListener, CTInboxListener {
 
     var contentList:ArrayList<CleverTapDisplayUnitContent> = ArrayList();
 
@@ -74,6 +78,13 @@ class MainActivity : AppCompatActivity(), DisplayUnitListener {
             override fun onActivated() {}
         })
 
+        clevertapi?.apply {
+
+            ctNotificationInboxListener = this@MainActivity
+
+            //Initialize the inbox and wait for callbacks on overridden methods
+            initializeInbox()
+        }
 
         clevertapi?.apply {
             setDisplayUnitListener(this@MainActivity)
@@ -86,12 +97,44 @@ class MainActivity : AppCompatActivity(), DisplayUnitListener {
 
         recyclerview.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
 
-        app_inbox.setOnClickListener(View.OnClickListener {
-            launchAppInbox();
+//        app_inbox.setOnClickListener(View.OnClickListener {
+//            launchAppInbox();
+//        })
+
+        launch_another_activity.setOnClickListener(View.OnClickListener {
+            launchAnotherActivity();
+        })
+
+        getFirebaseToken()
+    }
+
+    fun getFirebaseToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Logger.v( "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            // Log and toast
+            //val msg = getString(R.string.msg_token_fmt, token)
+            Logger.v("Sunny has the token!", token)
+            //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
         })
     }
 
+    override fun inboxMessagesDidUpdate() {
+        Logger.i("CleverTap", "inboxMessagesDidUpdate() called")
+    }
 
+    override fun inboxDidInitialize() {
+        app_inbox.setOnClickListener(View.OnClickListener {
+            val cleverTapDefaultInstance = CleverTapAPI.getDefaultInstance(this@MainActivity)
+            cleverTapDefaultInstance?.showAppInbox()//Opens Activity with default style config
+        })
+    }
 
     override fun onDisplayUnitsLoaded(units: ArrayList<CleverTapDisplayUnit>) {
         // you will get display units here
@@ -120,6 +163,15 @@ class MainActivity : AppCompatActivity(), DisplayUnitListener {
         Logger.v("Added to display adapter")
         Logger.v((contentList.size).toString())
         Logger.v((contentList.size).toString())
+    }
+
+    /** Called when the user taps the Send button */
+    fun launchAnotherActivity() {
+        val message = "personal Message";
+        val intent = Intent(this, AppInboxActivity::class.java).apply {
+            putExtra(EXTRA_MESSAGE, message)
+        }
+        startActivity(intent)
     }
 
     /** Called when the user taps the Send button */

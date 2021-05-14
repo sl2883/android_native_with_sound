@@ -25,10 +25,18 @@
         app:layout_constraintTop_toBottomOf="@id/native_trigger" />
 
     <Button
-        android:id="@+id/app_inbox"
+        android:id="@+id/launch_another_activity"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/recyclerview"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:text="Another Activity" />
+
+    <Button
+        android:id="@+id/app_inbox"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/launch_another_activity"
         app:layout_constraintLeft_toLeftOf="parent"
         android:text="App Inbox" />
 
