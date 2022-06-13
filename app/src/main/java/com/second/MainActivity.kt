@@ -35,23 +35,28 @@ class MainActivity : AppCompatActivity(), DisplayUnitListener, CTInboxListener {
         setContentView(R.layout.activity_main)
 
         var clevertapi = CleverTapAPI.getDefaultInstance(getApplicationContext());
-        CleverTapAPI.createNotificationChannel(
-            getApplicationContext(),
-            "generic",
-            "generic",
-            "Game Of Thrones",
-            NotificationManager.IMPORTANCE_MAX,
-            true,
-            "myring.mp3"
-        );
-        CleverTapAPI.createNotificationChannel(
-            getApplicationContext(),
-            "generic1",
-            "generic1",
-            "Game Of Thrones",
-            NotificationManager.IMPORTANCE_MAX,
-            true
-        );
+
+        CleverTapAPI.createNotificationChannelGroup(getApplicationContext(),"groupChannelVerifiedCustomers","groupVerifiedCustomers");
+        CleverTapAPI.createNotificationChannel(getApplicationContext(),"groupChannelVerifiedCustomers","Clientes Verificados","Clientes Verificados",NotificationManager.IMPORTANCE_MAX,"groupChannelVerifiedCustomers",true);
+
+
+//        CleverTapAPI.createNotificationChannel(
+//            getApplicationContext(),
+//            "generic",
+//            "generic",
+//            "Game Of Thrones",
+//            NotificationManager.IMPORTANCE_MAX,
+//            true,
+//            "myring.mp3"
+//        );
+//        CleverTapAPI.createNotificationChannel(
+//            getApplicationContext(),
+//            "generic1",
+//            "generic1",
+//            "Game Of Thrones",
+//            NotificationManager.IMPORTANCE_MAX,
+//            true
+//        );
 
         CleverTapAPI.setDebugLevel(3);
 

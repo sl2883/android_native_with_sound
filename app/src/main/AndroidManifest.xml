@@ -15,6 +15,25 @@
         android:theme="@style/Theme.Second">
         <activity android:name=".AppInboxActivity"
             android:parentActivityName=".MainActivity">
+            <intent-filter android:label="Activity One">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "http://www.example.com/activityone” -->
+                <!-- note that the leading "/" is required for pathPrefix-->
+                <data android:scheme="https" android:host="www.truemotion.com" android:pathPrefix="/activityone" />
+            </intent-filter>
+
+            <intent-filter android:label="Activity One">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "example://activityone” -->
+                <!-- From Android studio terminal -->
+                <!--  adb shell am start -W -a android.intent.action.VIEW -d "com.second://activityone?movie=SpiderMan" com.second
+-->
+                <data android:scheme="com.second" android:host="activityone" />
+            </intent-filter>
         </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -23,6 +42,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
 
         <meta-data
             android:name="CLEVERTAP_ACCOUNT_ID"
